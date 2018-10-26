@@ -1,4 +1,4 @@
-//% color="#AA278D" weight=100 icon="\uf1ec" block="Maker Cloud"
+//% color="#AA278D" weight=100 icon="\uf1eb" block="Maker Cloud"
 var Makercloud;
 (function (Makercloud) {
     var mqttServerProd = "mqtt.makercloud.scaleinnotech.com";
