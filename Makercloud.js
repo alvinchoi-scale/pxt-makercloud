@@ -1,31 +1,27 @@
 //% color="#AA278D" weight=100 icon="\uf1ec" block="Maker Cloud"
-namespace Makercloud {
-
-    let mqttServerProd = "mqtt.makercloud.scaleinnotech.com";
-    let mqttServerSit = "mqtt.makercloud.scaleinnotech.com";
-    let currentServer = mqttServerProd;
-
-    let wifiSetupCompleted = false;
-    let initCompleted = false;
-
-    export enum Server {
-
+var Makercloud;
+(function (Makercloud) {
+    var mqttServerProd = "mqtt.makercloud.scaleinnotech.com";
+    var mqttServerSit = "mqtt.makercloud.scaleinnotech.com";
+    var currentServer = mqttServerProd;
+    var wifiSetupCompleted = false;
+    var initCompleted = false;
+    var Server;
+    (function (Server) {
         //% blockId="mqtt_server_prod" block="Maker Cloud"
-        main = "prod",
+        Server["main"] = "prod";
         //% blockId="mqtt_server_sit" block="Maker Cloud Lab"
-        sit = "sit"
-    }
-
-
+        Server["sit"] = "sit";
+    })(Server = Makercloud.Server || (Makercloud.Server = {}));
     /**
      * setup mqtt server
      */
     //% blockId=set_to_sit_server
     //% block="Laboratory"
-    export function setMqttSit() {
+    function setMqttSit() {
         currentServer = mqttServerSit;
     }
-
+    Makercloud.setMqttSit = setMqttSit;
     /**
      * setup WIFI
      * @param ssid Wifi Name; eg: WIFI
@@ -33,16 +29,16 @@ namespace Makercloud {
      */
     //% blockId=setup_wifi
     //% block
-    export function setupWifi(ssid: string, wifiPassword: string) {
+    function setupWifi(ssid, wifiPassword) {
         wifiSetupCompleted = true;
     }
-
+    Makercloud.setupWifi = setupWifi;
     /**
      * everything starts from here
      */
     //% blockId=init_maker_cloud
     //% block="Run Maker Cloud"
-    export function initMakerCloud() {
+    function initMakerCloud() {
         if (wifiSetupCompleted === false) {
             // wait for setup completed
             return;
@@ -50,11 +46,12 @@ namespace Makercloud {
         if (initCompleted === false) {
             // init here
             initCompleted = true;
-        } else {
+        }
+        else {
             // todo
         }
     }
-
+    Makercloud.initMakerCloud = initMakerCloud;
     /**
      * publish message to topic
      * @param key key name of data; eg: KEY
@@ -63,7 +60,7 @@ namespace Makercloud {
      */
     //% blockId=publish_message_to_topic
     //% block
-    export function publish(key: string, value: string, topicName: string) {
-
+    function publish(key, value, topicName) {
     }
-}
+    Makercloud.publish = publish;
+})(Makercloud || (Makercloud = {}));
