@@ -32,7 +32,7 @@ namespace Makercloud {
      * @param wifiPassword Wifi Name; eg: password
      */
     //% blockId=setup_wifi
-    //% block
+    //% block="Setup WIFI | WIFI Name: %ssid | Password : %wifiPassword"
     export function setupWifi(ssid: string, wifiPassword: string) {
         wifiSetupCompleted = true;
     }
@@ -62,7 +62,7 @@ namespace Makercloud {
      * @param topicName topic name; eg: TOPIC_NAME
      */
     //% blockId=publish_message_to_topic
-    //% block
+    //% block="Publish %key -> %value to %topicName"
     export function publish(key: string, value: string, topicName: string) {
 
     }

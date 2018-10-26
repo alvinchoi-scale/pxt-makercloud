@@ -28,7 +28,7 @@ var Makercloud;
      * @param wifiPassword Wifi Name; eg: password
      */
     //% blockId=setup_wifi
-    //% block
+    //% block="Setup WIFI | WIFI Name: %ssid | Password : %wifiPassword"
     function setupWifi(ssid, wifiPassword) {
         wifiSetupCompleted = true;
     }
@@ -59,7 +59,7 @@ var Makercloud;
      * @param topicName topic name; eg: TOPIC_NAME
      */
     //% blockId=publish_message_to_topic
-    //% block
+    //% block="Publish %key -> %value to %topicName"
     function publish(key, value, topicName) {
     }
     Makercloud.publish = publish;
