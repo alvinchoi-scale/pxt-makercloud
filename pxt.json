@@ -8,7 +8,8 @@
         "radio": "*"
     },
     "files": [
-        "Makercloud.ts"
+        "Makercloud.ts",
+        "Obloq.cpp"
     ],
     "testFiles": [
     ],
