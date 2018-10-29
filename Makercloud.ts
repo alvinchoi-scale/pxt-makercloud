@@ -98,8 +98,68 @@ namespace Makercloud {
      * --------------------------------------------------------------------------------------------------------------------------------------------
      */
 
+    //% advanced=true shim=Obloq::obloqreadString
+    function obloqreadString(size: number): string {
+        return "";
+    }
+
+    //% advanced=true shim=Obloq::obloqgetRxBufferSize
+    function obloqgetRxBufferSize(): number {
+        return 0
+    }
+
+    //% advanced=true shim=Obloq::obloqSetTxBufferSize
+    function obloqSetTxBufferSize(size: number): void {
+        return
+    }
+
+    //% advanced=true shim=Obloq::obloqSetRxBufferSize
+    function obloqSetRxBufferSize(size: number): void {
+        return
+    }
+
+    //% advanced=true shim=Obloq::obloqRxBufferedSize
+    function obloqRxBufferedSize(): number {
+        return 0
+    }
+
+    //% advanced=true shim=Obloq::obloqEventAfter
+    function obloqEventAfter(len: number): void {
+        return
+    }
+
+    //% advanced=true shim=Obloq::obloqEventOn
+    function obloqEventOn(msg: string): void {
+        return
+    }
+
+    //% advanced=true shim=Obloq::obloqClearRxBuffer
+    function obloqClearRxBuffer(): void {
+        return
+    }
+
+    //% advanced=true shim=Obloq::obloqClearTxBuffer
+    function obloqClearTxBuffer(): void {
+        return
+    }
+
+    //% advanced=true shim=Obloq::obloqforevers
+    function obloqforevers(a: Action): void {
+        return
+    }
+
     //% advanced=true shim=Obloq::obloqWriteString
     function obloqWriteString(text: string): void {
+        return
+    }
+
+    //% advanced=true shim=Obloq::obloqDisDisplay
+    function obloqDisDisplay(): void {
+        return
+    }
+
+    //% advanced=true shim=Obloq::obloqEnDisplay
+    function obloqEnDisplay(): void {
         return
     }
 
@@ -131,10 +191,6 @@ namespace Makercloud {
         obloqWriteString(message + "\r");
     }
 
-    //% advanced=true shim=Obloq::obloqreadString
-    function obloqreadString(size: number): string {
-        return "";
-    }
 
     /********************************************************************************************
      Function    : connectWifi

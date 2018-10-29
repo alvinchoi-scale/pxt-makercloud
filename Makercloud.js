@@ -89,8 +89,56 @@ var Makercloud;
      *
      * --------------------------------------------------------------------------------------------------------------------------------------------
      */
+    //% advanced=true shim=Obloq::obloqreadString
+    function obloqreadString(size) {
+        return "";
+    }
+    //% advanced=true shim=Obloq::obloqgetRxBufferSize
+    function obloqgetRxBufferSize() {
+        return 0;
+    }
+    //% advanced=true shim=Obloq::obloqSetTxBufferSize
+    function obloqSetTxBufferSize(size) {
+        return;
+    }
+    //% advanced=true shim=Obloq::obloqSetRxBufferSize
+    function obloqSetRxBufferSize(size) {
+        return;
+    }
+    //% advanced=true shim=Obloq::obloqRxBufferedSize
+    function obloqRxBufferedSize() {
+        return 0;
+    }
+    //% advanced=true shim=Obloq::obloqEventAfter
+    function obloqEventAfter(len) {
+        return;
+    }
+    //% advanced=true shim=Obloq::obloqEventOn
+    function obloqEventOn(msg) {
+        return;
+    }
+    //% advanced=true shim=Obloq::obloqClearRxBuffer
+    function obloqClearRxBuffer() {
+        return;
+    }
+    //% advanced=true shim=Obloq::obloqClearTxBuffer
+    function obloqClearTxBuffer() {
+        return;
+    }
+    //% advanced=true shim=Obloq::obloqforevers
+    function obloqforevers(a) {
+        return;
+    }
     //% advanced=true shim=Obloq::obloqWriteString
     function obloqWriteString(text) {
+        return;
+    }
+    //% advanced=true shim=Obloq::obloqDisDisplay
+    function obloqDisDisplay() {
+        return;
+    }
+    //% advanced=true shim=Obloq::obloqEnDisplay
+    function obloqEnDisplay() {
         return;
     }
     /** --------------------------------------------------------------------------------------------------------------------------------------------
@@ -116,10 +164,6 @@ var Makercloud;
      ********************************************************************************************/
     function Obloq_sendMessage(message) {
         obloqWriteString(message + "\r");
-    }
-    //% advanced=true shim=Obloq::obloqreadString
-    function obloqreadString(size) {
-        return "";
     }
     /********************************************************************************************
      Function    : connectWifi
