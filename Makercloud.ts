@@ -654,19 +654,6 @@ namespace Makercloud {
         return OBLOQ_ERROR_TYPE_IS_ERR
     }
 
-    /**
-     * Get IP address.
-     */
-    //% weight=98
-    //% blockId=Obloq_Obloq_ifconfig
-    //% block="ipconfig"
-    //% advanced=true
-    export function Obloq_wifi_ipconfig(): string {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        return OBLOQ_WIFI_IP
-    }
-
-
     function Obloq_http_wait_request(time: number): string {
         if (time < 100) {
             time = 100
