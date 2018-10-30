@@ -432,12 +432,8 @@ namespace Makercloud {
      * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
      * @param IP to IP ,eg: "0.0.0.0"
      * @param PORT to PORT ,eg: 80
-     * @param receive to receive ,eg: SerialPin.P1
-     * @param send to send ,eg: SerialPin.P2
      */
     //% weight=99
-    //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
-    //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
     //% blockId=Makercloud_http_setup
     //% block="Obloq setup http | Pin set: | receiving data (green wire): %receive| sending data (blue wire): %send | Wi-Fi: | name: %SSID| password: %PASSWORD| http config: | ip: %IP| port: %PORT | start connection"
     export function Makercloud_http_setup(/*wifi*/SSID: string, PASSWORD: string,
@@ -457,15 +453,9 @@ namespace Makercloud {
      * Two parallel stepper motors are executed simultaneously(DegreeDual).
      * @param SSID to SSID ,eg: "yourSSID"
      * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
-     * @param IOT_ID to IOT_ID ,eg: "yourIotId"
-     * @param IOT_PWD to IOT_PWD ,eg: "yourIotPwd"
      * @param IOT_TOPIC to IOT_TOPIC ,eg: "yourIotTopic"
-     * @param receive to receive ,eg: SerialPin.P1
-     * @param send to send ,eg: SerialPin.P2
      */
     //% weight=102
-    //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
-    //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
     //% SERVER.fieldEditor="gridpicker" SERVER.fieldOptions.columns=2
     //% blockId=Makercloud_mqtt_setup
     //% block="Maker Cloud setup mqtt | Wi-Fi: | name: %SSID| password: %PASSWORD| (default topic_0) Topic: %IOT_TOPIC | start connection: | Servers: %SERVER"
