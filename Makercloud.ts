@@ -617,23 +617,6 @@ namespace Makercloud {
         Obloq_serial_init()
     }*/
 
-    // /**
-    //  * connect Wifi.SSID(string):account; PWD(string):password;
-    //  * @param SSID to SSID ,eg: "yourSSID"
-    //  * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
-    //  */
-    // /*
-    // //% weight=100
-    // //% blockId=Obloq_wifi_connect_export
-    // //% block="wifi connect to| SSID %SSID| PASSWORD %PASSWORD"
-    // //% advanced=true
-    // export function Obloq_wifi_connect_export(SSID: string, PASSWORD: string): void {
-    //     while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-    //     OBLOQ_WIFI_SSID = SSID
-    //     OBLOQ_WIFI_PASSWORD = PASSWORD
-    //     Obloq_connect_wifi()
-    // }*/
-
     function Obloq_connect_wifi(): number {
         if (OBLOQ_WIFI_CONNECTED == OBLOQ_BOOL_TYPE_IS_TRUE) {
             return OBLOQ_ERROR_TYPE_IS_SUCCE
