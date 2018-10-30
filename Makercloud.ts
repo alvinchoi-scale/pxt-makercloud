@@ -512,7 +512,7 @@ namespace Obloq {
         OBLOQ_SERIAL_TX = SerialPin.P2
         OBLOQ_SERIAL_RX = SerialPin.P1
         Obloq_serial_init()
-        Obloq_start_connect_mqtt(SERVER.,"connect wifi")
+        Obloq_start_connect_mqtt(SERVER,"connect wifi")
     }
 
     /**
