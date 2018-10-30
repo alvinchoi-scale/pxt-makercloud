@@ -1,25 +1,9 @@
-/*！
- * @file Obloq/Obloq.ts
- * @brief DFRobot's obloq makecode library.
- * @n [Get the module here](http://www.dfrobot.com.cn/goods-1577.html)
- * @n Obloq is a serial port of WIFI connection module, Obloq can connect
- *    to Microsoft Azure IoT and other standard MQTT protocol IoT.
- *
- * @copyright	[DFRobot](http://www.dfrobot.com), 2016
- * @copyright	GNU Lesser General Public License
- *
- * @author [email](xin.li@dfrobot.com)
- * @version  V1.0
- * @date  2018-03-20
- */
-
-
 //debug
 const OBLOQ_DEBUG = false
 const OBLOQ_MQTT_DEFAULT_SERVER = true
 //DFRobot easy iot
-const OBLOQ_MQTT_EASY_IOT_SERVER_CHINA = "iot.dfrobot.com.cn"
-const OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL = "iot.dfrobot.com"
+const OBLOQ_MQTT_EASY_IOT_SERVER_PROD = "mqtt.makercloud.scaleinnotech.com"
+const OBLOQ_MQTT_EASY_IOT_SERVER_SIT = "mqtt.makercloud-sit.scaleinnotech.com"
 const OBLOQ_MQTT_EASY_IOT_PORT = 1883
 //other iot
 const OBLOQ_MQTT_USER_IOT_SERVER = "---.-----.---"
@@ -95,10 +79,10 @@ namespace Obloq {
 
 
     export enum SERVERS {
-        //% blockId=SERVERS_China block="China"
-        China,
-        //% blockId=SERVERS_Global block="Global"
-        Global
+        //% blockId=SERVERS_PROD block="Main"
+        prod,
+        //% blockId=SERVERS_SIT block="Lab"
+        sit
     }
 
     export class PacketaMqtt {
@@ -317,10 +301,10 @@ namespace Obloq {
     function Obloq_start_connect_mqtt(SERVER: SERVERS, connectStart: string): void {
         OBLOQ_WORKING_MODE_IS_MQTT = OBLOQ_BOOL_TYPE_IS_TRUE
         if (OBLOQ_MQTT_DEFAULT_SERVER) {
-            if (SERVER == SERVERS.China) {
-                OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_CHINA
-            } else if (SERVER == SERVERS.Global) {
-                OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL
+            if (SERVER == SERVERS.prod) {
+                OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_PROD
+            } else if (SERVER == SERVERS.sit) {
+                OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_SIT
             }
             OBLOQ_MQTT_PORT = OBLOQ_MQTT_EASY_IOT_PORT
         } else {
@@ -418,10 +402,10 @@ namespace Obloq {
             Obloq_mark_reset(type)
             if (OBLOQ_DEBUG) { basic.showString(OBLOQ_WRONG_TYPE) }
             if (OBLOQ_WORKING_MODE_IS_MQTT) {
-                if (OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_CHINA) {
-                    Obloq_start_connect_mqtt(SERVERS.China, "connect " + type)
-                } else if (OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL) {
-                    Obloq_start_connect_mqtt(SERVERS.Global, "connect " + type)
+                if (OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_PROD) {
+                    Obloq_start_connect_mqtt(SERVERS.prod, "connect " + type)
+                } else if (OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_SIT) {
+                    Obloq_start_connect_mqtt(SERVERS.sit, "connect " + type)
                 } else {
                     //do nothing
                 }
@@ -486,7 +470,6 @@ namespace Obloq {
     //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
     //% SERVER.fieldEditor="gridpicker" SERVER.fieldOptions.columns=2
     //% blockId=Obloq_mqtt_setup
-    //% block="Obloq setup mqtt | Pin set: | receiving data (green wire): %receive| sending data (blue wire): %send | Wi-Fi: | name: %SSID| password: %PASSWORD| IoT service: | Iot_id: %IOT_ID| Iot_pwd: %IOT_PWD| (default topic_0) Topic: %IOT_TOPIC | start connection: | Servers: %SERVER"
     export function Obloq_mqtt_setup(/*serial*/receive: SerialPin, send: SerialPin,
                                      /*wifi*/SSID: string, PASSWORD: string,
                                      /*mqtt*/IOT_ID: string, IOT_PWD: string, IOT_TOPIC: string,
@@ -501,6 +484,35 @@ namespace Obloq {
         OBLOQ_SERIAL_RX = receive
         Obloq_serial_init()
         Obloq_start_connect_mqtt(SERVER,"connect wifi")
+    }
+
+    /**
+     * Two parallel stepper motors are executed simultaneously(DegreeDual).
+     * @param SSID to SSID ,eg: "yourSSID"
+     * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
+     * @param IOT_ID to IOT_ID ,eg: "yourIotId"
+     * @param IOT_PWD to IOT_PWD ,eg: "yourIotPwd"
+     * @param IOT_TOPIC to IOT_TOPIC ,eg: "yourIotTopic"
+     * @param receive to receive ,eg: SerialPin.P1
+     * @param send to send ,eg: SerialPin.P2
+     */
+    //% weight=102
+    //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
+    //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
+    //% SERVER.fieldEditor="gridpicker" SERVER.fieldOptions.columns=2
+    //% blockId=maker_cloud_mqtt_setup
+    //% block="Maker Cloud setup mqtt | Wi-Fi: | name: %SSID| password: %PASSWORD| (default topic_0) Topic: %IOT_TOPIC | start connection: | Servers: %SERVER"
+    export function maker_cloud_mqtt_setup(
+                                     /*wifi*/SSID: string, PASSWORD: string, IOT_TOPIC: string,
+                                     /*connect*/SERVER: SERVERS):
+        void {
+        OBLOQ_WIFI_SSID = SSID
+        OBLOQ_WIFI_PASSWORD = PASSWORD
+        OBLOQ_MQTT_TOPIC[0][0] = IOT_TOPIC
+        OBLOQ_SERIAL_TX = SerialPin.P2
+        OBLOQ_SERIAL_RX = SerialPin.P1
+        Obloq_serial_init()
+        Obloq_start_connect_mqtt(SERVER.,"connect wifi")
     }
 
     /**
