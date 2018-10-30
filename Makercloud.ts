@@ -438,9 +438,9 @@ namespace Makercloud {
     //% weight=99
     //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
     //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
-    //% blockId=Obloq_http_setup
+    //% blockId=Makercloud_http_setup
     //% block="Obloq setup http | Pin set: | receiving data (green wire): %receive| sending data (blue wire): %send | Wi-Fi: | name: %SSID| password: %PASSWORD| http config: | ip: %IP| port: %PORT | start connection"
-    export function maker_cloud_http_setup(/*wifi*/SSID: string, PASSWORD: string,
+    export function Makercloud_http_setup(/*wifi*/SSID: string, PASSWORD: string,
                                      /*mqtt*/IP: string, PORT: number):
         void {
         OBLOQ_WIFI_SSID = SSID
@@ -467,9 +467,9 @@ namespace Makercloud {
     //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
     //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
     //% SERVER.fieldEditor="gridpicker" SERVER.fieldOptions.columns=2
-    //% blockId=maker_cloud_mqtt_setup
+    //% blockId=Makercloud_mqtt_setup
     //% block="Maker Cloud setup mqtt | Wi-Fi: | name: %SSID| password: %PASSWORD| (default topic_0) Topic: %IOT_TOPIC | start connection: | Servers: %SERVER"
-    export function maker_cloud_mqtt_setup(
+    export function Makercloud_mqtt_setup(
                                      /*wifi*/SSID: string, PASSWORD: string, IOT_TOPIC: string,
                                      /*connect*/SERVER: SERVERS):
         void {
