@@ -14,5 +14,6 @@
         "_locales/zh-tw/Obloq-strings.json"
     ],
     "testFiles": [],
-    "public": false
+    "public": false,
+    "installedVersion": "workspace:a485a30a-58af-42d7-b349-96fcb5c7ea67"
 }
