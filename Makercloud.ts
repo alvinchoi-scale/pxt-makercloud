@@ -432,14 +432,11 @@ namespace Makercloud {
      * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
      * @param IP to IP ,eg: "0.0.0.0"
      * @param PORT to PORT ,eg: 80
-     * @param receive to receive ,eg: SerialPin.P1
-     * @param send to send ,eg: SerialPin.P2
      */
     //% weight=99
-    //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
-    //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
     //% blockId=Makercloud_http_setup
-    //% block="Obloq setup http | Pin set: | receiving data (green wire): %receive| sending data (blue wire): %send | Wi-Fi: | name: %SSID| password: %PASSWORD| http config: | ip: %IP| port: %PORT | start connection"
+    //% block="Maker Cloud setup http | Wi-Fi: | name: %SSID| password: %PASSWORD| http config: | ip: %IP| port: %PORT | start connection"
+    //% advanced=true
     export function Makercloud_http_setup(/*wifi*/SSID: string, PASSWORD: string,
                                      /*mqtt*/IP: string, PORT: number):
         void {
@@ -457,15 +454,9 @@ namespace Makercloud {
      * Two parallel stepper motors are executed simultaneously(DegreeDual).
      * @param SSID to SSID ,eg: "yourSSID"
      * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
-     * @param IOT_ID to IOT_ID ,eg: "yourIotId"
-     * @param IOT_PWD to IOT_PWD ,eg: "yourIotPwd"
      * @param IOT_TOPIC to IOT_TOPIC ,eg: "yourIotTopic"
-     * @param receive to receive ,eg: SerialPin.P1
-     * @param send to send ,eg: SerialPin.P2
      */
     //% weight=102
-    //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
-    //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
     //% SERVER.fieldEditor="gridpicker" SERVER.fieldOptions.columns=2
     //% blockId=Makercloud_mqtt_setup
     //% block="Maker Cloud setup mqtt | Wi-Fi: | name: %SSID| password: %PASSWORD| (default topic_0) Topic: %IOT_TOPIC | start connection: | Servers: %SERVER"
@@ -617,24 +608,8 @@ namespace Makercloud {
         Obloq_serial_init()
     }*/
 
-    // /**
-    //  * connect Wifi.SSID(string):account; PWD(string):password;
-    //  * @param SSID to SSID ,eg: "yourSSID"
-    //  * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
-    //  */
-    // /*
-    // //% weight=100
-    // //% blockId=Obloq_wifi_connect_export
-    // //% block="wifi connect to| SSID %SSID| PASSWORD %PASSWORD"
-    // //% advanced=true
-    // export function Obloq_wifi_connect_export(SSID: string, PASSWORD: string): void {
-    //     while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-    //     OBLOQ_WIFI_SSID = SSID
-    //     OBLOQ_WIFI_PASSWORD = PASSWORD
-    //     Obloq_connect_wifi()
-    // }*/
-
     function Obloq_connect_wifi(): number {
+        basic.showString("Q")
         if (OBLOQ_WIFI_CONNECTED == OBLOQ_BOOL_TYPE_IS_TRUE) {
             return OBLOQ_ERROR_TYPE_IS_SUCCE
         }
@@ -646,29 +621,37 @@ namespace Makercloud {
         let timeout_count_max = timeout / 100
         let timeout_count_now = 0
         if (OBLOQ_WIFI_CONNECT_FIRST) {
+            basic.showString("W")
             //serial init
             if (!OBLOQ_SERIAL_INIT) {
+                basic.showString("E")
                 Obloq_serial_init()
             }
             //show icon
-            Obloq_wifi_icon_display()
+            //Obloq_wifi_icon_display()
             for (let i = 0; i < 3; i++) {
                 obloqWriteString("|1|1|\r")
                 basic.pause(100)
             }
+            basic.showString("R")
             obloqreadString(obloqgetRxBufferSize()) //Clear serial port cache
+            basic.showString("T")
             obloqWriteString("|2|1|" + OBLOQ_WIFI_SSID + "," + OBLOQ_WIFI_PASSWORD + "|\r") //Send wifi account and password instructions
+            basic.showString("Y")
             OBLOQ_WIFI_CONNECT_FIRST = OBLOQ_BOOL_TYPE_IS_FALSE
         }
 
         while (OBLOQ_BOOL_TYPE_IS_TRUE) {
             if ((timeout_count_now + 1) % 3 == 0) {
-                Obloq_wifi_icon_display()
+                basic.showString("U")
+                // Obloq_wifi_icon_display()
             }
             if (OBLOQ_ANSWER_CMD == "WifiConnected") {
+                basic.showString("O")
                 OBLOQ_WIFI_IP = OBLOQ_ANSWER_CONTENT
                 return OBLOQ_ERROR_TYPE_IS_SUCCE
             } else if (OBLOQ_ANSWER_CMD == "WifiConnectFailure") {
+                basic.showString("P")
                 return OBLOQ_ERROR_TYPE_IS_WIFI_CONNECT_FAILURE
             }
             basic.pause(100)
@@ -680,19 +663,6 @@ namespace Makercloud {
         }
         return OBLOQ_ERROR_TYPE_IS_ERR
     }
-
-    /**
-     * Get IP address.
-     */
-    //% weight=98
-    //% blockId=Obloq_Obloq_ifconfig
-    //% block="ipconfig"
-    //% advanced=true
-    export function Obloq_wifi_ipconfig(): string {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        return OBLOQ_WIFI_IP
-    }
-
 
     function Obloq_http_wait_request(time: number): string {
         if (time < 100) {
@@ -766,7 +736,7 @@ namespace Makercloud {
     //% weight=79
     //% blockId=Obloq_http_get
     //% block="http(get) | url %url| timeout(ms) %time"
-    //% advanced=false
+    //% advanced=true
     export function Obloq_http_get(url: string, time: number): string {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_HTTP_INIT)
@@ -788,6 +758,7 @@ namespace Makercloud {
     //% weight=78
     //% blockId=Obloq_http_post
     //% block="http(post) | url %url| content %content| timeout(ms) %time"
+    //% advanced=true
     export function Obloq_http_post(url: string, content: string, time: number): string {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_HTTP_INIT)
@@ -810,6 +781,7 @@ namespace Makercloud {
     //% weight=77
     //% blockId=Obloq_http_put
     //% block="http(put) | url %url| content %content| timeout(ms) %time"
+    //% advanced=true
     export function Obloq_http_put(url: string, content: string, time: number): string {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_HTTP_INIT)

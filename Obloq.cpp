@@ -8,7 +8,7 @@ namespace Obloq {
     }
 
     //%
-    StringData* obloqreadString(int size){
+    String obloqreadString(int size){
         int n = size;
         if (n == 0) return ManagedString("").leakData();
         return ManagedString(uBit.serial.read(n, MicroBitSerialMode::ASYNC)).leakData();
@@ -41,7 +41,7 @@ namespace Obloq {
     }
 
     //%
-    void obloqEventOn(StringData* msg){
+    void obloqEventOn(String msg){
         uBit.serial.eventOn(msg, MicroBitSerialMode::ASYNC);
     }
 
@@ -69,7 +69,7 @@ namespace Obloq {
     }
 
     //%
-    void obloqWriteString(StringData *text) {
+    void obloqWriteString(String text) {
       if (!text) {
           return;
       }
