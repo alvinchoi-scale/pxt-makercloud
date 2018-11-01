@@ -51,15 +51,10 @@ namespace Makercloud {
     let OBLOQ_MQTT_PWD = OBLOQ_STR_TYPE_IS_NONE
     let OBLOQ_MQTT_ID = OBLOQ_STR_TYPE_IS_NONE
     let OBLOQ_MQTT_TOPIC = [["x", "false"], ["x", "false"], ["x", "false"], ["x", "false"], ["x", "false"]]
-    //http
-    let OBLOQ_HTTP_IP = OBLOQ_STR_TYPE_IS_NONE
-    let OBLOQ_HTTP_PORT = 8080
-    let OBLOQ_HTTP_BUSY = OBLOQ_BOOL_TYPE_IS_FALSE
     //state
     let OBLOQ_WIFI_CONNECTED = OBLOQ_BOOL_TYPE_IS_FALSE
     let OBLOQ_WIFI_CONNECT_FIRST = OBLOQ_BOOL_TYPE_IS_TRUE
     let OBLOQ_MQTT_INIT = OBLOQ_BOOL_TYPE_IS_FALSE
-    let OBLOQ_HTTP_INIT = OBLOQ_BOOL_TYPE_IS_FALSE
     //callback
     let OBLOQ_MQTT_CB: Action[] = [null, null, null, null, null]
     //commands
@@ -73,7 +68,6 @@ namespace Makercloud {
     let OBLOQ_MQTT_EVENT = OBLOQ_BOOL_TYPE_IS_FALSE
     //mode
     let OBLOQ_WORKING_MODE_IS_MQTT = OBLOQ_BOOL_TYPE_IS_FALSE
-    let OBLOQ_WORKING_MODE_IS_HTTP = OBLOQ_BOOL_TYPE_IS_FALSE
     let OBLOQ_WORKING_MODE_IS_STOP = OBLOQ_BOOL_TYPE_IS_TRUE
 
 
@@ -90,17 +84,6 @@ namespace Makercloud {
          * Obloq receives commands.
          */
         public topic: string;
-        /**
-         * Obloq receives the message content.
-         */
-        public message: string;
-    }
-
-    export class PacketaHttp {
-        /**
-         * Obloq receives commands.
-         */
-        public err: string;
         /**
          * Obloq receives the message content.
          */
@@ -167,65 +150,6 @@ namespace Makercloud {
         return
     }
 
-    //% advanced=true shim=Obloq::obloqEnDisplay
-    function obloqEnDisplay(): void {
-        return
-    }
-
-    function Obloq_wifi_icon_display(): void {
-        switch (OBLOQ_WIFI_ICON) {
-            case 1: {
-                basic.clearScreen()
-                led.plot(0, 4)
-                OBLOQ_WIFI_ICON += 1
-            } break;
-            case 2: {
-                led.plot(0, 2)
-                led.plot(1, 2)
-                led.plot(2, 3)
-                led.plot(2, 4)
-                OBLOQ_WIFI_ICON += 1
-            } break;
-            case 3: {
-                led.plot(0, 0)
-                led.plot(1, 0)
-                led.plot(2, 0)
-                led.plot(3, 1)
-                led.plot(4, 2)
-                led.plot(4, 3)
-                led.plot(4, 4)
-                OBLOQ_WIFI_ICON = 1
-            } break;
-        }
-    }
-
-    function Obloq_mqtt_icon_display(): void {
-        switch (OBLOQ_MQTT_ICON) {
-            case 1: {
-                basic.clearScreen()
-                led.plot(4, 0)
-                OBLOQ_MQTT_ICON += 1
-            } break;
-            case 2: {
-                led.plot(2, 0)
-                led.plot(2, 1)
-                led.plot(3, 2)
-                led.plot(4, 2)
-                OBLOQ_MQTT_ICON += 1
-            } break;
-            case 3: {
-                led.plot(0, 0)
-                led.plot(0, 1)
-                led.plot(0, 2)
-                led.plot(1, 3)
-                led.plot(2, 4)
-                led.plot(3, 4)
-                led.plot(4, 4)
-                OBLOQ_MQTT_ICON = 1
-            } break;
-        }
-    }
-
     function Obloq_mark_reset(type: string): void {
         if (type == "wifi") {
             OBLOQ_WIFI_IP = "0.0.0.0"
@@ -233,7 +157,6 @@ namespace Makercloud {
             OBLOQ_WIFI_CONNECTED = OBLOQ_BOOL_TYPE_IS_FALSE
         }
         OBLOQ_MQTT_INIT = OBLOQ_BOOL_TYPE_IS_FALSE
-        OBLOQ_HTTP_INIT = OBLOQ_BOOL_TYPE_IS_FALSE
         OBLOQ_WIFI_ICON = 1
         OBLOQ_WIFI_ICON = 1
         for (let i = 0; i < OBLOQ_MQTT_TOPIC_NUM_MAX; i++) {
@@ -264,39 +187,6 @@ namespace Makercloud {
         obloqClearRxBuffer()
         obloqClearTxBuffer()
         onEvent()
-    }
-
-    function Obloq_start_connect_http(): void {
-        OBLOQ_WORKING_MODE_IS_HTTP = OBLOQ_BOOL_TYPE_IS_TRUE
-        let ret = Obloq_connect_wifi()
-        if (OBLOQ_DEBUG) { basic.showNumber(ret) }
-        switch (ret) {
-            case OBLOQ_ERROR_TYPE_IS_SUCCE: {
-                basic.showIcon(IconNames.Yes)
-                basic.pause(500)
-                basic.clearScreen()
-                OBLOQ_WIFI_CONNECTED = OBLOQ_BOOL_TYPE_IS_TRUE
-            } break
-            case OBLOQ_ERROR_TYPE_IS_WIFI_CONNECT_TIMEOUT: {
-                basic.showIcon(IconNames.No)
-                basic.pause(500)
-                OBLOQ_WRONG_TYPE = "wifi connect timeout"
-                return
-            } break
-            case OBLOQ_ERROR_TYPE_IS_WIFI_CONNECT_FAILURE: {
-                basic.showIcon(IconNames.No)
-                basic.pause(500)
-                OBLOQ_WRONG_TYPE = "wifi connect failure"
-                return
-            } break
-            case OBLOQ_ERROR_TYPE_IS_ERR: {
-                basic.showNumber(ret)
-                basic.showIcon(IconNames.No)
-                while (OBLOQ_BOOL_TYPE_IS_TRUE) { basic.pause(10000) }
-            } break
-        }
-        OBLOQ_HTTP_INIT = OBLOQ_BOOL_TYPE_IS_TRUE
-        OBLOQ_WORKING_MODE_IS_STOP = OBLOQ_BOOL_TYPE_IS_FALSE
     }
 
     function Obloq_start_connect_mqtt(SERVER: SERVERS, connectStart: string): void {
@@ -414,42 +304,10 @@ namespace Makercloud {
                     OBLOQ_WORKING_MODE_IS_STOP = OBLOQ_BOOL_TYPE_IS_FALSE
                 }
             }
-            if (OBLOQ_WORKING_MODE_IS_HTTP) {
-                Obloq_start_connect_http()
-                if (OBLOQ_HTTP_INIT) {
-                    OBLOQ_WRONG_TYPE = OBLOQ_STR_TYPE_IS_NONE
-                    OBLOQ_WORKING_MODE_IS_STOP = OBLOQ_BOOL_TYPE_IS_FALSE
-                }
-            }
-
         }
         if (OBLOQ_DEBUG) { led.unplot(0, 0) }
         basic.pause(150)
     })
-
-    /**
-     * Two parallel stepper motors are executed simultaneously(DegreeDual).
-     * @param SSID to SSID ,eg: "yourSSID"
-     * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
-     * @param IP to IP ,eg: "0.0.0.0"
-     * @param PORT to PORT ,eg: 80
-     */
-    //% weight=99
-    //% blockId=Makercloud_http_setup
-    //% block="Maker Cloud setup http | Wi-Fi: | name: %SSID| password: %PASSWORD| http config: | ip: %IP| port: %PORT | start connection"
-    //% advanced=true
-    export function Makercloud_http_setup(/*wifi*/SSID: string, PASSWORD: string,
-                                     /*mqtt*/IP: string, PORT: number):
-        void {
-        OBLOQ_WIFI_SSID = SSID
-        OBLOQ_WIFI_PASSWORD = PASSWORD
-        OBLOQ_HTTP_IP = IP
-        OBLOQ_HTTP_PORT = PORT
-        OBLOQ_SERIAL_TX = SerialPin.P1
-        OBLOQ_SERIAL_RX = SerialPin.P2
-        Obloq_serial_init()
-        Obloq_start_connect_http()
-    }
 
     /**
      * Two parallel stepper motors are executed simultaneously(DegreeDual).
@@ -511,14 +369,6 @@ namespace Makercloud {
         }
     }
 
-    /**
-     * Disconnect the serial port.
-     */
-    /*
-    export function Obloq_serial_quit(): void {
-        obloqWriteString("quit!\r")
-    }*/
-
     function Obloq_disconnect_wifi(): boolean {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         let time = 5000
@@ -553,62 +403,6 @@ namespace Makercloud {
         return OBLOQ_BOOL_TYPE_IS_FALSE
     }
 
-
-    /**
-     * Reconnect WiFi.time(ms): private long maxWait
-     * @param time to timeout, eg: 10000
-     */
-    /*
-    export function Obloq_wifi_reconnect(): boolean {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        let time = 10000
-        if (time < 100) {
-            time = 100
-        }
-        let timeout = time / 100
-        let _timeout = 0
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|2|3|\r")
-
-        while (OBLOQ_BOOL_TYPE_IS_TRUE) {
-            if (OBLOQ_ANSWER_CMD == "WifiConnected") {
-                OBLOQ_WIFI_IP = OBLOQ_ANSWER_CONTENT
-                OBLOQ_WIFI_CONNECT_FIRST = OBLOQ_BOOL_TYPE_IS_FALSE
-                OBLOQ_WIFI_CONNECTED = OBLOQ_BOOL_TYPE_IS_TRUE
-                return OBLOQ_BOOL_TYPE_IS_TRUE
-            }
-            basic.pause(100)
-            _timeout += 1
-            if (_timeout > timeout) {
-                if (OBLOQ_ANSWER_CMD != "WifiConnected") {
-                    return OBLOQ_BOOL_TYPE_IS_FALSE
-                }
-                else {
-                    OBLOQ_WIFI_IP = OBLOQ_ANSWER_CONTENT
-                    OBLOQ_WIFI_CONNECT_FIRST = OBLOQ_BOOL_TYPE_IS_FALSE
-                    OBLOQ_WIFI_CONNECTED = OBLOQ_BOOL_TYPE_IS_TRUE
-                    return OBLOQ_BOOL_TYPE_IS_TRUE
-                }
-            }
-        }
-        return OBLOQ_BOOL_TYPE_IS_FALSE
-    }*/
-
-    /**
-     * pin set
-     * @param receive to receive ,eg: SerialPin.P1
-     * @param send to send ,eg: SerialPin.P2
-     */
-    /*
-    export function Obloq_serial_pin_set(receive: SerialPin, send: SerialPin): void {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        OBLOQ_SERIAL_TX = send
-        OBLOQ_SERIAL_RX = receive
-        Obloq_serial_init()
-    }*/
-
     function Obloq_connect_wifi(): number {
         basic.showString("Q")
         if (OBLOQ_WIFI_CONNECTED == OBLOQ_BOOL_TYPE_IS_TRUE) {
@@ -628,8 +422,6 @@ namespace Makercloud {
                 basic.showString("E")
                 Obloq_serial_init()
             }
-            //show icon
-            //Obloq_wifi_icon_display()
             for (let i = 0; i < 3; i++) {
                 obloqWriteString("|1|1|\r")
                 basic.showString("L" + i)
@@ -646,7 +438,6 @@ namespace Makercloud {
         while (OBLOQ_BOOL_TYPE_IS_TRUE) {
             if ((timeout_count_now + 1) % 3 == 0) {
                 basic.showString("U")
-                // Obloq_wifi_icon_display()
             }
             basic.showString(OBLOQ_ANSWER_CMD)
             if (OBLOQ_ANSWER_CMD == "WifiConnected") {
@@ -667,180 +458,6 @@ namespace Makercloud {
         return OBLOQ_ERROR_TYPE_IS_ERR
     }
 
-    function Obloq_http_wait_request(time: number): string {
-        if (time < 100) {
-            time = 100
-        }
-        let timeout = time / 100
-        let _timeout = 0
-
-        while (OBLOQ_BOOL_TYPE_IS_TRUE) {
-            basic.pause(100)
-            if (OBLOQ_ANSWER_CMD == "200") {//http请求成功
-                return OBLOQ_ANSWER_CONTENT //返回消息
-            } else if (OBLOQ_ANSWER_CMD == "-1") {//获取数据失败
-                Obloq_http_wrong_animation("requestFailed")
-                return OBLOQ_STR_TYPE_IS_NONE
-            } else if (OBLOQ_ANSWER_CMD == "1") {//http请求字段错误
-                Obloq_http_wrong_animation("requestFailed")
-                return OBLOQ_STR_TYPE_IS_NONE
-            }
-
-            _timeout += 1
-            if (_timeout > timeout) {
-                Obloq_http_wrong_animation("timeOut")
-                return OBLOQ_STR_TYPE_IS_NONE
-            }
-        }
-
-        return OBLOQ_STR_TYPE_IS_NONE
-    }
-
-    function Obloq_http_wrong_animation(wrongType: string): void {
-        if (wrongType == "requestFailed") {  //http 请求失败或者字段错误动画
-            basic.showIcon(IconNames.No, 10)
-            basic.pause(500)
-            for (let i = 0; i < 3; i++) {
-                basic.clearScreen()
-                basic.pause(100)
-                basic.showIcon(IconNames.No, 10)
-                basic.pause(50)
-            }
-        } else if (wrongType == "timeOut") { //http 请求超时动画
-            basic.showLeds(`
-                . . # . .
-                . . # . .
-                . . # . .
-                . . . . .
-                . . # . .
-                `, 10)
-            basic.pause(500)
-            for (let i = 0; i < 3; i++) {
-                basic.clearScreen()
-                basic.pause(100)
-                basic.showLeds(`
-                    . . # . .
-                    . . # . .
-                    . . # . .
-                    . . . . .
-                    . . # . .
-                    `, 10)
-                basic.pause(50)
-            }
-        }
-        basic.pause(150)
-        basic.clearScreen()
-    }
-
-    /**
-     * The HTTP get request.url(string):URL:time(ms): private long maxWait
-     * @param time set timeout, eg: 10000
-     */
-    //% weight=79
-    //% blockId=Obloq_http_get
-    //% block="http(get) | url %url| timeout(ms) %time"
-    //% advanced=true
-    export function Obloq_http_get(url: string, time: number): string {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        if (!OBLOQ_HTTP_INIT)
-            return OBLOQ_STR_TYPE_IS_NONE
-
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|3|1|http://" + OBLOQ_HTTP_IP + ":" + OBLOQ_HTTP_PORT + "/" + url + "|\r")
-
-        return Obloq_http_wait_request(time)
-    }
-
-    /**
-     * The HTTP post request.url(string): URL; content(string):content
-     * time(ms): private long maxWait
-     * @param time set timeout, eg: 10000
-     */
-    //% weight=78
-    //% blockId=Obloq_http_post
-    //% block="http(post) | url %url| content %content| timeout(ms) %time"
-    //% advanced=true
-    export function Obloq_http_post(url: string, content: string, time: number): string {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        if (!OBLOQ_HTTP_INIT)
-            return "";
-
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|3|2|http://" + OBLOQ_HTTP_IP + ":" + OBLOQ_HTTP_PORT + "/" + url + "," + content + "|\r")
-
-        return Obloq_http_wait_request(time)
-    }
-
-
-    /**
-     * The HTTP put request,Obloq.put() can only be used for http protocol!
-     * url(string): URL; content(string):content; time(ms): private long maxWait
-     * @param time set timeout, eg: 10000
-     */
-    //% weight=77
-    //% blockId=Obloq_http_put
-    //% block="http(put) | url %url| content %content| timeout(ms) %time"
-    //% advanced=true
-    export function Obloq_http_put(url: string, content: string, time: number): string {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        if (!OBLOQ_HTTP_INIT)
-            return "";
-
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|3|3|http://" + OBLOQ_HTTP_IP + ":" + OBLOQ_HTTP_PORT + "/" + url + "," + content + "|\r")
-
-        return Obloq_http_wait_request(time)
-    }
-
-
-
-
-    /**
-     * Delete an HTTP connection.url(string): URL; content(string):content
-     * time(ms): private long maxWait
-     * @param time set timeout, eg: 10000
-     */
-    /*
-    export function Obloq_httpDelete(url: string, content: string, time: number): string[] {
-        if (time < 100) {
-            time = 100
-        }
-        let timeout = time / 100
-        let _timeout = 0
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|3|4|http://"+myip+":"+myport+"/"+url+","+content+"|\r")
-        let item = OBLOQ_STR_TYPE_IS_NONE
-        let num = 0
-        let j = 0
-        while (OBLOQ_BOOL_TYPE_IS_TRUE) {
-            if (e == "200") {
-                let list = ["200", param]
-                return list
-            } else if (e == "err") {
-                let list = ["err", param]
-                return list
-            } else if (e == "|2|1|") {
-                let list = ["999", "disconnet wifi"]
-                return list
-            }
-            basic.pause(100)
-            _timeout += 1
-            if (_timeout > timeout) {
-                let list = ["408", "time out"]
-                return list
-            }
-        }
-        let list = ["408", "time out"]
-        return list
-    }*/
 
     function Obloq_connect_mqtt(): void {
         if (!OBLOQ_SERIAL_INIT) {
@@ -860,7 +477,6 @@ namespace Makercloud {
 
         while (_timeout < 1000) {
             if (_timeout % 50 == 0) {
-                Obloq_mqtt_icon_display()
                 iconnum += 1;
             }
             if (OBLOQ_ANSWER_CMD == "MqttConneted") {
@@ -883,7 +499,6 @@ namespace Makercloud {
             __timeout = _timeout + 2000
             while (_timeout < __timeout) {
                 if (_timeout % 50 == 0) {
-                    Obloq_mqtt_icon_display()
                     iconnum += 1
                 }
                 if (iconnum > 3) {//动画一次以上
@@ -909,86 +524,7 @@ namespace Makercloud {
             }
         }
         return OBLOQ_ERROR_TYPE_IS_SUCCE
-        //basic.showString("ok")
     }
-
-    /**
-     * Reconnect the MQTT.
-     */
-    /*
-    export function Obloq_mqtt_reconnect(): boolean {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        let time = 10000
-        if (time < 100) {
-            time = 100
-        }
-        let timeout = time / 100
-        let _timeout = 0
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|4|1|5|\r")
-
-        while (OBLOQ_BOOL_TYPE_IS_TRUE) {
-            if (OBLOQ_ANSWER_CMD == "MqttConneted") {
-                OBLOQ_MQTT_INIT = OBLOQ_BOOL_TYPE_IS_TRUE
-                return OBLOQ_BOOL_TYPE_IS_TRUE
-            } else if (OBLOQ_ANSWER_CMD == "MqttConnectFailure") {
-                return OBLOQ_BOOL_TYPE_IS_FALSE
-            }
-            basic.pause(100)
-            _timeout += 1
-            if (_timeout > timeout) {
-                if (OBLOQ_ANSWER_CMD != "MqttConneted") {
-                    return OBLOQ_BOOL_TYPE_IS_FALSE
-                }
-                else {
-                    OBLOQ_MQTT_INIT = OBLOQ_BOOL_TYPE_IS_TRUE
-                    return OBLOQ_BOOL_TYPE_IS_TRUE
-                }
-            }
-        }
-        return OBLOQ_BOOL_TYPE_IS_FALSE
-    }  */
-
-    /**
-     * Disconnect the MQTT connection.
-     */
-    /*
-    export function Obloq_mqtt_disconnect(): boolean {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        let time = 10000
-        if (time < 100) {
-            time = 100
-        }
-        let timeout = time / 100
-        let _timeout = 0
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|4|1|4|\r")
-
-        while (OBLOQ_BOOL_TYPE_IS_TRUE) {
-            if (OBLOQ_ANSWER_CMD == "MqttDisconnected") {
-                OBLOQ_MQTT_INIT = OBLOQ_BOOL_TYPE_IS_FALSE
-                return OBLOQ_BOOL_TYPE_IS_TRUE
-            } else if (OBLOQ_ANSWER_CMD == "MqttDisconnectFailure") {
-                return OBLOQ_BOOL_TYPE_IS_FALSE
-            }
-            basic.pause(100)
-            _timeout += 1
-            if (_timeout > timeout) {
-                if (OBLOQ_ANSWER_CMD != "MqttDisconnected") {
-                    return OBLOQ_BOOL_TYPE_IS_FALSE
-                }
-                else {
-                    OBLOQ_MQTT_INIT = OBLOQ_BOOL_TYPE_IS_FALSE
-                    return OBLOQ_BOOL_TYPE_IS_TRUE
-                }
-            }
-        }
-        return OBLOQ_BOOL_TYPE_IS_FALSE
-    }   */
 
     /**
      * Send a message.
@@ -1148,7 +684,7 @@ namespace Makercloud {
                     if (item.charAt(i + 2) == '1') { //|2|1|
                         OBLOQ_ANSWER_CMD = "WifiDisconnect"
                         OBLOQ_ANSWER_CONTENT = OBLOQ_STR_TYPE_IS_NONE
-                        if (OBLOQ_MQTT_INIT || OBLOQ_HTTP_INIT || OBLOQ_WIFI_CONNECTED) {
+                        if (OBLOQ_MQTT_INIT || OBLOQ_WIFI_CONNECTED) {
                             OBLOQ_WRONG_TYPE = "wifi disconnect"
                         }
                         return
@@ -1479,8 +1015,6 @@ namespace Makercloud {
                 }
             }
         }
-        //serial.writeNumber(n);
-        //serial.writeString("\r\n");
     }
 
     function onEvent() {
@@ -1488,9 +1022,6 @@ namespace Makercloud {
             Obloq_serial_init()
         }
         OBLOQ_MQTT_EVENT = OBLOQ_BOOL_TYPE_IS_TRUE
-        //obloqClearRxBuffer()
-        //obloqClearTxBuffer()
-        //obloqEventAfter(1)
         obloqEventOn("\r")
         control.onEvent(<number>32, <number>1, Obloq_serial_recevice); // register handler
     }
