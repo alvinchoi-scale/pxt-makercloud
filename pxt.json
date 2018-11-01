@@ -9,9 +9,7 @@
     },
     "files": [
         "Makercloud.ts",
-        "Obloq.cpp",
-        "_locales/zh-cn/Obloq-strings.json",
-        "_locales/zh-tw/Obloq-strings.json"
+        "Obloq.cpp"
     ],
     "testFiles": [],
     "public": false,
