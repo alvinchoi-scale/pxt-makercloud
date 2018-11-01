@@ -255,6 +255,7 @@ namespace Makercloud {
             OBLOQ_SERIAL_RX,
             BaudRate.BaudRate9600
         )
+
         obloqSetTxBufferSize(300)
         obloqSetRxBufferSize(300)
         obloqWriteString("\r")
@@ -444,8 +445,8 @@ namespace Makercloud {
         OBLOQ_WIFI_PASSWORD = PASSWORD
         OBLOQ_HTTP_IP = IP
         OBLOQ_HTTP_PORT = PORT
-        OBLOQ_SERIAL_TX = SerialPin.P2
-        OBLOQ_SERIAL_RX = SerialPin.P1
+        OBLOQ_SERIAL_TX = SerialPin.P1
+        OBLOQ_SERIAL_RX = SerialPin.P2
         Obloq_serial_init()
         Obloq_start_connect_http()
     }
@@ -467,8 +468,8 @@ namespace Makercloud {
         OBLOQ_WIFI_SSID = SSID
         OBLOQ_WIFI_PASSWORD = PASSWORD
         OBLOQ_MQTT_TOPIC[0][0] = IOT_TOPIC
-        OBLOQ_SERIAL_TX = SerialPin.P2
-        OBLOQ_SERIAL_RX = SerialPin.P1
+        OBLOQ_SERIAL_TX = SerialPin.P1
+        OBLOQ_SERIAL_RX = SerialPin.P2
         Obloq_serial_init()
         Obloq_start_connect_mqtt(SERVER, "connect wifi")
     }
@@ -631,6 +632,7 @@ namespace Makercloud {
             //Obloq_wifi_icon_display()
             for (let i = 0; i < 3; i++) {
                 obloqWriteString("|1|1|\r")
+                basic.showString("L" + i)
                 basic.pause(100)
             }
             basic.showString("R")
@@ -646,6 +648,7 @@ namespace Makercloud {
                 basic.showString("U")
                 // Obloq_wifi_icon_display()
             }
+            basic.showString(OBLOQ_ANSWER_CMD)
             if (OBLOQ_ANSWER_CMD == "WifiConnected") {
                 basic.showString("O")
                 OBLOQ_WIFI_IP = OBLOQ_ANSWER_CONTENT
@@ -657,7 +660,7 @@ namespace Makercloud {
             basic.pause(100)
             timeout_count_now += 1
             if (timeout_count_now > timeout_count_max) {
-                //basic.showIcon(IconNames.No)
+                basic.showIcon(IconNames.No)
                 return OBLOQ_ERROR_TYPE_IS_WIFI_CONNECT_TIMEOUT
             }
         }
@@ -993,9 +996,9 @@ namespace Makercloud {
      * @param mess set mess, eg: mess
      */
     //% weight=101
-    //% blockId=Obloq_mqtt_send_message
+    //% blockId=Makercloud_mqtt_send_message
     //% block="pubLish %mess |to topic_0"
-    export function Obloq_mqtt_send_message(mess: string): void {
+    export function Makercloud_mqtt_send_message(mess: string): void {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_MQTT_INIT) {
             return
@@ -1012,11 +1015,11 @@ namespace Makercloud {
      * @param mess set mess, eg: mess
      */
     //% weight=190
-    //% blockId=Obloq_mqtt_send_message_more
+    //% blockId=Makercloud_mqtt_send_message_more
     //% block="pubLish %mess |to %top"
     //% top.fieldEditor="gridpicker" top.fieldOptions.columns=2
     //% advanced=true
-    export function Obloq_mqtt_send_message_more(mess: string, top: TOPIC): void {
+    export function Makercloud_mqtt_send_message_more(mess: string, top: TOPIC): void {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_MQTT_INIT) {
             return
@@ -1103,6 +1106,7 @@ namespace Makercloud {
 
     function Obloq_serial_recevice(): void {
         let size = obloqRxBufferedSize()
+        basic.showString("s=" + size + "")
         //serial.writeNumber(size)
         if (size <= 5) return
         let item = obloqreadString(size)
