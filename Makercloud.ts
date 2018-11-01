@@ -39,8 +39,8 @@ namespace Makercloud {
 
     //serial
     let OBLOQ_SERIAL_INIT = OBLOQ_BOOL_TYPE_IS_FALSE
-    let OBLOQ_SERIAL_TX = SerialPin.P2
-    let OBLOQ_SERIAL_RX = SerialPin.P1
+    let OBLOQ_SERIAL_TX = SerialPin.P1
+    let OBLOQ_SERIAL_RX = SerialPin.P2
     //wifi
     let OBLOQ_WIFI_SSID = OBLOQ_STR_TYPE_IS_NONE
     let OBLOQ_WIFI_PASSWORD = OBLOQ_STR_TYPE_IS_NONE
@@ -326,8 +326,6 @@ namespace Makercloud {
         OBLOQ_WIFI_SSID = SSID
         OBLOQ_WIFI_PASSWORD = PASSWORD
         OBLOQ_MQTT_TOPIC[0][0] = IOT_TOPIC
-        OBLOQ_SERIAL_TX = SerialPin.P1
-        OBLOQ_SERIAL_RX = SerialPin.P2
         Obloq_serial_init()
         Obloq_start_connect_mqtt(SERVER, "connect wifi")
     }
@@ -371,7 +369,7 @@ namespace Makercloud {
 
     function Obloq_disconnect_wifi(): boolean {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        let time = 5000
+        let time = 500
         if (time < 100) {
             time = 100
         }
@@ -410,7 +408,7 @@ namespace Makercloud {
         }
 
         OBLOQ_WIFI_ICON = 1
-        let timeout = 10000  //Set the default timeout period 10s.
+        let timeout = 500  //Set the default timeout5period 10s.
         timeout = timeout < 100 ? 100 : timeout //Timeout minimum resolution 100ms
 
         let timeout_count_max = timeout / 100
@@ -437,9 +435,9 @@ namespace Makercloud {
 
         while (OBLOQ_BOOL_TYPE_IS_TRUE) {
             if ((timeout_count_now + 1) % 3 == 0) {
-                basic.showString("U")
+                // basic.showString("U")
             }
-            basic.showString(OBLOQ_ANSWER_CMD)
+            basic.showString("C=" + OBLOQ_ANSWER_CMD)
             if (OBLOQ_ANSWER_CMD == "WifiConnected") {
                 basic.showString("O")
                 OBLOQ_WIFI_IP = OBLOQ_ANSWER_CONTENT
@@ -450,8 +448,9 @@ namespace Makercloud {
             }
             basic.pause(100)
             timeout_count_now += 1
+            basic.showString(timeout_count_now + "," + timeout_count_max)
             if (timeout_count_now > timeout_count_max) {
-                basic.showIcon(IconNames.No)
+                basic.showString("TO")
                 return OBLOQ_ERROR_TYPE_IS_WIFI_CONNECT_TIMEOUT
             }
         }
