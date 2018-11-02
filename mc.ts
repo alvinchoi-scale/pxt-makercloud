@@ -75,7 +75,6 @@ namespace Makercloud1 {
         ping()
         ping()
         ping()
-
         serial.onDataReceived("\r", onDataReceivedHandler)
     }
 
