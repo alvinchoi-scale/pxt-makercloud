@@ -9,12 +9,43 @@ namespace Makercloud1 {
     /**
      * @param SSID to SSID ,eg: "yourSSID"
      * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
-     * @param IOT_TOPIC to IOT_TOPIC ,eg: "yourIotTopic"
      */
     //% blockId=mc_wifi_setup
+    //% block="Maker Cloud setup mqtt | Wi-Fi: | name: %ssid| password: %password"
+    export function setupWifi(ssid: string, password: string) {
+        serial.writeString("|2|1|" + ssid + "," + password + "|\r")
+    }
+
+    /**
+     * For testing purpose
+     */
+    //% blockId=mc_change_to_sit
+    //% block="Maker Cloud Lab"
+    //% advance=true
+    export function changeToSitServer() {
+        SERVER = SIT_SERVER
+    }
+
+
+    /**
+     * @param topic ,eg: "topic"
+     * @param message ,eg: "message"
+     */
+    //% blockId=mc_change_to_sit
+    //% block="tell %topic about %message"
+    //% advance=true
+    export function publishToTopic(topic: string, message: string) {
+        serial.writeString("|4|1|3|" + topic + "|" + message + "|\r");
+    }
+
+    /**
+     * Connect your device to MQTT Server
+     */
+    //% blockId=mc_connect_mqtt
     //% block="Maker Cloud setup mqtt | Wi-Fi: | name: %SSID| password: %PASSWORD"
-    export function setupWifi(/*wifi*/SSID: string, PASSWORD: string) {
-        serial.writeString("|2|1|" + SSID + "," + PASSWORD + "|\r")
+    export function connectMqtt() {
+        let port = 1883;
+        serial.writeString("|4|1|1|" + SERVER + "|" + port + "|\r")
     }
 
     /**
@@ -31,11 +62,14 @@ namespace Makercloud1 {
             SERIAL_RX,
             BaudRate.BaudRate9600
         )
+        ping()
+        ping()
+        ping()
     }
 
     function ping() {
         serial.writeString("|1|1|\r")
-       
+
     }
 
 
