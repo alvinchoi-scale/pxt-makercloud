@@ -5,13 +5,14 @@ namespace Makercloud1 {
     let PROD_SERVER = "mqtt.makercloud.scaleinnotech.com"
     let SIT_SERVER = "mqtt.makercloud-sit.scaleinnotech.com"
     let SERVER = PROD_SERVER
+    let dataHandler = {}
 
     /**
      * @param SSID to SSID ,eg: "yourSSID"
      * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
      */
     //% blockId=mc_wifi_setup
-    //% block="Maker Cloud setup mqtt | Wi-Fi: | name: %ssid| password: %password"
+    //% block="connect Wi-Fi: | name: %ssid| password: %password"
     export function setupWifi(ssid: string, password: string) {
         serial.writeString("|2|1|" + ssid + "," + password + "|\r")
     }
@@ -31,7 +32,7 @@ namespace Makercloud1 {
      * @param topic ,eg: "topic"
      * @param message ,eg: "message"
      */
-    //% blockId=mc_change_to_sit
+    //% blockId=mc_publish_message_to_topic
     //% block="tell %topic about %message"
     //% advance=true
     export function publishToTopic(topic: string, message: string) {
@@ -42,10 +43,19 @@ namespace Makercloud1 {
      * Connect your device to MQTT Server
      */
     //% blockId=mc_connect_mqtt
-    //% block="Maker Cloud setup mqtt | Wi-Fi: | name: %SSID| password: %PASSWORD"
+    //% block="connect mqtt"
     export function connectMqtt() {
         let port = 1883;
-        serial.writeString("|4|1|1|" + SERVER + "|" + port + "|\r")
+        serial.writeString("|4|1|1|" + SERVER + "|" + port + "|" + "username" + "|" + "password" + "|\r")
+    }
+
+    /**
+     * Subscribe to MQTT topic
+     */
+    //% blockId=mc_subscribe_topic
+    //% block="subscribe to %topic"
+    export function subscrbeTopic(topic: string) {
+        serial.writeString("|4|1|2|" + topic + "|\r")
     }
 
     /**
@@ -65,12 +75,49 @@ namespace Makercloud1 {
         ping()
         ping()
         ping()
+        serial.onDataReceived("\r", onDataReceivedHandler)
+    }
+
+    function handleTopicMessage(topic:string, message: string) {
+        basic.showString(message)
+    }
+
+    function onDataReceivedHandler(): void {
+        let response = serial.readUntil("\r")
+        let prefix = response.substr(0, 7)
+        basic.showString(prefix)
+        if (prefix == "|4|1|5|") {
+            let message: string[] = splitMessage(response.substr(7, response.length - 1), "|")
+            handleTopicMessage(message[0], message[1])
+        } else {
+            // basic.showString("X")
+        }
     }
 
     function ping() {
         serial.writeString("|1|1|\r")
-
     }
 
+    function splitMessage(message: string, delimitor: string): string[] {
+        let beforeDelimitor = ""
+        let afterDelimitor = ""
+        let i = 0
+        let delimitorPassed = false
+        for (i = 0; i < message.length; i++) {
+            let letter: string = message.charAt(i)
+
+            if (letter == delimitor) {
+                delimitorPassed = true
+                continue
+            }
+
+            if (delimitorPassed) {
+                afterDelimitor += letter
+            } else {
+                beforeDelimitor += letter
+            }
+        }
+        return [beforeDelimitor, afterDelimitor];
+    }
 
 }
