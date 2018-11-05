@@ -1,5 +1,5 @@
-//% weight=10 color=#008B00 icon="\uf1eb" block="Maker Cloud 1"
-namespace Makercloud1 {
+//% weight=10 color=#008B00 icon="\uf1eb" block="Maker Cloud "
+namespace Makercloud {
     let SERIAL_TX = SerialPin.P2
     let SERIAL_RX = SerialPin.P1
     let PROD_SERVER = "mqtt.makercloud.scaleinnotech.com"
