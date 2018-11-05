@@ -7,8 +7,6 @@
         "core": "*"
     },
     "files": [
-        "Makercloud.ts",
-        "Obloq.cpp",
         "mc.ts"
     ],
     "testFiles": [],
