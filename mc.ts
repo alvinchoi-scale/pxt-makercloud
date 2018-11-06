@@ -74,9 +74,6 @@ namespace Makercloud {
             "" + control.deviceSerialNumber() + control.deviceName()
             if (topicList[i] != "") {
                 serial.writeString("|4|1|2|" + topicList[i] + "|\r")
-                basic.showString("")
-                basic.pause(1000)
-                basic.showString("OK")
             }
         }
     }
