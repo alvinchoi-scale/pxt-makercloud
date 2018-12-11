@@ -1,5 +1,5 @@
-//% weight=10 color=#008B00 icon="\uf1eb" block="Maker Cloud"
-namespace Makercloud {
+//% weight=10 color=#008B00 icon="\uf1eb" block="Maker Cloud - DfRobot"
+namespace Makercloud_Dfrobot {
     let SERIAL_TX = SerialPin.P2
     let SERIAL_RX = SerialPin.P1
     let PROD_SERVER = "mqtt.makercloud.scaleinnotech.com"
@@ -22,7 +22,7 @@ namespace Makercloud {
      * @param SSID to SSID ,eg: "yourSSID"
      * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
      */
-    //% blockId=mc_wifi_setup
+    //% blockId=mc_df_wifi_setup
     //% block="connect Wi-Fi: | name: %ssid| password: %password"
     export function setupWifi(ssid: string, password: string) {
         serial.writeString("|2|1|" + ssid + "," + password + "|\r")
@@ -31,11 +31,22 @@ namespace Makercloud {
     /**
      * For testing purpose
      */
-    //% blockId=mc_change_to_sit
+    //% blockId=mc_df_change_to_sit
     //% block="Maker Cloud Lab"
     //% advanced=true
     export function changeToSitServer() {
         SERVER = SIT_SERVER
+    }
+
+    /**
+     * Configuration RX TX Pin
+     */
+    //% blockId=mc_df_config_rxtx
+    //% block="Update RxTx Pin"
+    //% advanced=true
+    export function configRxTxPin(rx: SerialPin, tx: SerialPin) {
+        SERIAL_TX = tx
+        SERIAL_RX = rx
     }
 
 
@@ -43,7 +54,7 @@ namespace Makercloud {
      * @param topic ,eg: "topic"
      * @param message ,eg: "message"
      */
-    //% blockId=mc_publish_message_to_topic
+    //% blockId=mc_df_publish_message_to_topic
     //% block="tell %topic about %message"
     //% advance=true
     export function publishToTopic(topic: string, message: string) {
@@ -54,7 +65,7 @@ namespace Makercloud {
     /**
      * Connect your device to MQTT Server
      */
-    //% blockId=mc_connect_mqtt
+    //% blockId=mc_df_connect_mqtt
     //% block="connect mqtt"
     export function connectMqtt() {
         let port = 1883;
@@ -65,7 +76,7 @@ namespace Makercloud {
      * Subscribe to MQTT topic
      * @param topics to topics ,eg: "ZXY,ABC"
      */
-    //% blockId=mc_subscribe_topic
+    //% blockId=mc_df_subscribe_topic
     //% block="i want to listen %topics"
     export function subscrbeTopic(topics: string) {
         let topicList = splitMessage(topics, ",")
@@ -82,7 +93,7 @@ namespace Makercloud {
      * Listener for MQTT topic
      * @param topic to topic ,eg: "ZXY"
      */
-    //% blockId=mc_register_topic_message_handler
+    //% blockId=mc_df_register_topic_message_handler
     //% block="When something talk to %topic, then"
     export function registerTopicMessageHandler(topic: string, fn: (message: string) => void) {
         let topicHandler = new TopicHandler()
@@ -97,7 +108,7 @@ namespace Makercloud {
      * @param IOT_TOPIC to IOT_TOPIC ,eg: "yourIotTopic"
      */
     //% weight=102
-    //% blockId=mc_init
+    //% blockId=mc_df_init
     //% block="Initialise Maker Cloud"
     export function init() {
         serial.redirect(
