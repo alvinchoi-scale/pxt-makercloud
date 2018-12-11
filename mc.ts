@@ -42,7 +42,7 @@ namespace Makercloud_Dfrobot {
      * Configuration RX TX Pin
      */
     //% blockId=mc_df_config_rxtx
-    //% block="Update RxTx Pin"
+    //% block="Update Pin: | RX: %rx| TX: %tx"
     //% advanced=true
     export function configRxTxPin(rx: SerialPin, tx: SerialPin) {
         SERIAL_TX = tx
