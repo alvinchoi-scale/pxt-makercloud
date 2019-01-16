@@ -6,11 +6,11 @@
     "dependencies": {
         "core": "*"
     },
-    "files": [        
+    "files": [
         "mc.ts",
         "mc.cpp"
     ],
     "testFiles": [],
     "public": false,
-    "installedVersion": "workspace:73ce7fb8-dd92-44a5-7dfa-b6786be24649"
+    "installedVersion": "workspace:cab86dfb-1f81-4deb-5a66-3f352f311d90"
 }
