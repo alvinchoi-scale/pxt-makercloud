@@ -6,8 +6,9 @@
     "dependencies": {
         "core": "*"
     },
-    "files": [
-        "mc.ts"
+    "files": [        
+        "mc.ts",
+        "mc.cpp"
     ],
     "testFiles": [],
     "public": false,
