@@ -266,7 +266,7 @@ namespace Makercloud_Dfrobot {
     }
 
     export function test() {
-        let msg = parseMakerCloudMessage("_dsn=12391203.13213,_dn=test,connected,a=1,b=2,c=3,done,test");
+        let msg = parseMakerCloudMessage("_dsn=446565559,_dn=tagot,a");
         serial.writeLine("deviceName=" + msg.deviceName)
         serial.writeLine("deviceSerialNumber=" + msg.deviceSerialNumber)
         serial.writeLine("rawMessage=" + msg.rawMessage)
