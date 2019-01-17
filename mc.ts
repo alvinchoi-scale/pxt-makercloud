@@ -293,10 +293,8 @@ namespace Makercloud_Dfrobot {
         for (i = 0; i <= total; i++) {
             let end = oldMessage.indexOf(delimitor);
             // OLED.showStringWithNewLine("end=" + end + ", oldmsg=" + oldMessage);
-            serial.writeLine("end=" + end + ", oldmsg=" + oldMessage);
             if (end == -1) {
                 // OLED.showStringWithNewLine("end is -1, now become=" + oldMessage.length);
-                serial.writeLine("end is -1, now become=" + oldMessage.length);
                 end = oldMessage.length
             }
             let subMessage = oldMessage.substr(0, end);
