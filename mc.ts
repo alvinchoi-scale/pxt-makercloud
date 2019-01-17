@@ -74,7 +74,7 @@ namespace Makercloud_Dfrobot {
         SERIAL_RX = rx
     }
 
-    export function showLoading(time: number){
+    export function showLoading(time: number) {
         let internal = time / 5;
         basic.showLeds(`
             # . . . .
@@ -286,7 +286,7 @@ namespace Makercloud_Dfrobot {
 
         let delimitor = ",";
         let start = 0;
-        let oldMessage:string = topicMessage;
+        let oldMessage: string = topicMessage;
 
         let i = 0;
         let total = countDelimitor(oldMessage, delimitor);
@@ -320,17 +320,17 @@ namespace Makercloud_Dfrobot {
                     }
                 }
             }
-            oldMessage = oldMessage.substr(end + 1, oldMessage.length);        
+            oldMessage = oldMessage.substr(end + 1, oldMessage.length);
         }
 
         return makerCloudMessage;
     }
 
-    export function countDelimitor(msg:string, delimitor:string): number{
-        let count:number = 0;
+    export function countDelimitor(msg: string, delimitor: string): number {
+        let count: number = 0;
         let i = 0;
-        for (i = 0 ; i < msg.length ; i++){
-            if (msg.charAt(i) == delimitor){
+        for (i = 0; i < msg.length; i++) {
+            if (msg.charAt(i) == delimitor) {
                 count++;
             }
         }
