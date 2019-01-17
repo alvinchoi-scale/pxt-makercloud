@@ -50,6 +50,7 @@ namespace Makercloud_Dfrobot {
     //% block="connect Wi-Fi: | name: %ssid| password: %password"
     export function setupWifi(ssid: string, password: string) {
         serial.writeString("|2|1|" + ssid + "," + password + "|\r")
+        showLoading(7000)
     }
 
     /**
@@ -73,6 +74,54 @@ namespace Makercloud_Dfrobot {
         SERIAL_RX = rx
     }
 
+    export function showLoading(time: number) {
+        let internal = time / 5;
+        basic.showLeds(`
+            # . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            `)
+        basic.pause(internal)
+
+        basic.showLeds(`
+            # # . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            `)
+        basic.pause(internal)
+
+        basic.showLeds(`
+            # # . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            `)
+        basic.pause(internal)
+
+        basic.showLeds(`
+            # # # . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            `)
+        basic.pause(internal)
+
+        basic.showLeds(`
+            # # # # #
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            `)
+        basic.pause(internal)
+        basic.showString("")
+    }
 
     /**
      * @param topic ,eg: "topic"
@@ -84,6 +133,7 @@ namespace Makercloud_Dfrobot {
     export function publishToTopic(topic: string, message: string) {
         message = "_dsn=" + control.deviceSerialNumber() + ",_dn=" + control.deviceName() + "," + message
         serial.writeString("|4|1|3|" + topic + "|" + message + "|\r");
+        showLoading(1000);
     }
 
     /**
@@ -94,6 +144,7 @@ namespace Makercloud_Dfrobot {
     export function connectMqtt() {
         let port = 1883;
         serial.writeString("|4|1|1|" + SERVER + "|" + port + "|" + "username" + "|" + "password" + "|\r")
+        showLoading(1000);
     }
 
     /**
@@ -108,6 +159,7 @@ namespace Makercloud_Dfrobot {
         for (i = 0; i < topicList.length; i++) {
             if (topicList[i] != "") {
                 serial.writeString("|4|1|2|" + topicList[i] + "|\r")
+                showLoading(500);
             }
         }
     }
@@ -160,6 +212,7 @@ namespace Makercloud_Dfrobot {
         ping()
         ping()
 
+        showLoading(500)
         serial.onDataReceived("\r", onDataReceivedHandler)
     }
 
@@ -195,6 +248,7 @@ namespace Makercloud_Dfrobot {
         if (prefix == "|4|1|5|") {
             let message: string[] = splitMessageOnFirstDelimitor(response.substr(7, response.length - 1), "|")
             let makerCloudMessage = parseMakerCloudMessage(message[1]);
+            // OLED.showStringWithNewLine("M=" + message[1] + ",OS=" + makerCloudMessage.stringMessageList.length + ",OK=" + makerCloudMessage.keyValueMessagList.length)
             handleTopicStringMessage(message[0], makerCloudMessage.stringMessageList)
             handleTopicKeyValueMessage(message[0], makerCloudMessage.keyValueMessagList)
         }
@@ -232,37 +286,55 @@ namespace Makercloud_Dfrobot {
 
         let delimitor = ",";
         let start = 0;
-        let oldMessage = topicMessage;
+        let oldMessage: string = topicMessage;
 
-        do {
+        let i = 0;
+        let total = countDelimitor(oldMessage, delimitor);
+        for (i = 0; i <= total; i++) {
             let end = oldMessage.indexOf(delimitor);
-            // serial.writeLine("end=" + end + ", oldmsg=" + oldMessage);
+            // OLED.showStringWithNewLine("end=" + end + ", oldmsg=" + oldMessage);
+            serial.writeLine("end=" + end + ", oldmsg=" + oldMessage);
             if (end == -1) {
-                // serial.writeLine("end is -1, now become=" + oldMessage.length);
+                // OLED.showStringWithNewLine("end is -1, now become=" + oldMessage.length);
+                serial.writeLine("end is -1, now become=" + oldMessage.length);
                 end = oldMessage.length
             }
             let subMessage = oldMessage.substr(0, end);
-            oldMessage = oldMessage.substr(end + 1, oldMessage.length);
             if (subMessage.indexOf("=") == -1) {
                 makerCloudMessage.stringMessageList[makerCloudMessage.stringMessageList.length] = subMessage
             } else {
                 let splitIndex = subMessage.indexOf("=");
                 let key = subMessage.substr(0, splitIndex);
                 let value = subMessage.substr(splitIndex + 1)
-                if (key == "_dsn"){
-                    makerCloudMessage.deviceSerialNumber = value;
-                } else if (key == "_dn"){
-                    makerCloudMessage.deviceName = value;
-                } else {
-                    let keyValue = new KeyValueMessage();
-                    keyValue.key = key;
-                    keyValue.value = value;
-                    makerCloudMessage.keyValueMessagList[makerCloudMessage.keyValueMessagList.length] = keyValue;
+
+                if (value.length > 0) {
+                    if (key == "_dsn") {
+                        makerCloudMessage.deviceSerialNumber = value;
+                    } else if (key == "_dn") {
+                        makerCloudMessage.deviceName = value;
+                    } else {
+                        let keyValue = new KeyValueMessage();
+                        keyValue.key = key;
+                        keyValue.value = value;
+                        makerCloudMessage.keyValueMessagList[makerCloudMessage.keyValueMessagList.length] = keyValue;
+                    }
                 }
             }
-        } while (oldMessage.length > 0)
+            oldMessage = oldMessage.substr(end + 1, oldMessage.length);
+        }
 
         return makerCloudMessage;
+    }
+
+    export function countDelimitor(msg: string, delimitor: string): number {
+        let count: number = 0;
+        let i = 0;
+        for (i = 0; i < msg.length; i++) {
+            if (msg.charAt(i) == delimitor) {
+                count++;
+            }
+        }
+        return count;
     }
 
     export function test() {
